@@ -2,7 +2,7 @@ module Craken
 
   require 'socket'
 
-  HOSTNAME          = Socket.gethostname.split(/\./)[0].downcase.strip
+  HOSTNAME          = Socket.gethostname.split('.').first.downcase.strip
   DEPLOY_PATH       = ENV['deploy_path'] || RAILS_ROOT
   if ENV['raketab_file']
     RAKETAB_FILE    = ENV['raketab_file']
