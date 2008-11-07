@@ -1,16 +1,18 @@
-module Craken
+require 'socket'
 
-  require 'socket'
+module Craken
+  def self.determine_raketab_file
+    if File.directory?("#{DEPLOY_PATH}/config/craken/") # Use hostname specific raketab first.
+      File.exists?("#{DEPLOY_PATH}/config/craken/#{HOSTNAME}_raketab") ?    
+      "#{DEPLOY_PATH}/config/craken/#{HOSTNAME}_raketab" : "#{DEPLOY_PATH}/config/craken/raketab"
+    else
+      "#{DEPLOY_PATH}/config/raketab"
+    end    
+  end
 
   HOSTNAME          = Socket.gethostname.split('.').first.downcase.strip
   DEPLOY_PATH       = ENV['deploy_path'] || RAILS_ROOT
-  if ENV['raketab_file']
-    RAKETAB_FILE    = ENV['raketab_file']
-  elsif File.directory?("#{DEPLOY_PATH}/config/craken/") # Use hostname specific raketab first.
-    RAKETAB_FILE    = File.exists?("#{DEPLOY_PATH}/config/craken/#{HOSTNAME}_raketab") ? "#{DEPLOY_PATH}/config/craken/#{HOSTNAME}_raketab" : "#{DEPLOY_PATH}/config/craken/raketab"
-  else
-    RAKETAB_FILE    = "#{DEPLOY_PATH}/config/raketab"
-  end
+  RAKETAB_FILE      = ENV['raketab_file'] || determine_raketab_file
   CRONTAB_EXE       = ENV['crontab_exe'] || "/usr/bin/crontab"
   RAKE_EXE          = ENV['rake_exe'] || (rake = `which rake`.strip and rake.empty?) ? "/usr/bin/rake" : rake
   RAKETAB_RAILS_ENV = ENV['raketab_rails_env'] || RAILS_ENV
@@ -59,5 +61,4 @@ module Craken
     `#{CRONTAB_EXE} #{filename}`
     FileUtils.rm filename
   end
-
 end
