@@ -6,10 +6,9 @@ namespace :craken do
   task :install do
     require 'erb'
     include Craken
-    if File.exists? RAKETAB_FILE
-      puts "craken:install => Using raketab file #{RAKETAB_FILE}"
-      #raketab = File.read RAKETAB_FILE
-      raketab = ERB.new(File.read(RAKETAB_FILE)).result(binding)
+    unless RAKETAB_FILES.empty?
+      files = (plural = RAKETAB_FILES.size > 1) ? RAKETAB_FILES.join(", ") : RAKETAB_FILES.first
+      puts "craken:install => Using raketab file#{plural ? 's' : ''} #{files}" 
       crontab = append_tasks(load_and_strip, raketab)
       install crontab
     end

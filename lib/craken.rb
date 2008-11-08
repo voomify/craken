@@ -1,18 +1,18 @@
 require 'socket'
 
 module Craken
-  def self.determine_raketab_file
+  def self.determine_raketab_files
     if File.directory?("#{DEPLOY_PATH}/config/craken/") # Use hostname specific raketab first.
-      File.exists?("#{DEPLOY_PATH}/config/craken/#{HOSTNAME}_raketab") ?    
-      "#{DEPLOY_PATH}/config/craken/#{HOSTNAME}_raketab" : "#{DEPLOY_PATH}/config/craken/raketab"
+      raketabs = Dir["#{DEPLOY_PATH}/config/craken/*raketab*"].partition {|f| f =~ %r[/raketab.*$] }
+      raketabs.last.empty? ? raketabs.first : raketabs.last.grep(/#{HOSTNAME}_raketab/)
     else
-      "#{DEPLOY_PATH}/config/raketab"
-    end    
+      Dir["#{DEPLOY_PATH}/config/raketab*"]
+    end
   end
 
   HOSTNAME          = Socket.gethostname.split('.').first.downcase.strip
   DEPLOY_PATH       = ENV['deploy_path'] || RAILS_ROOT
-  RAKETAB_FILE      = ENV['raketab_file'] || determine_raketab_file
+  RAKETAB_FILES     = ENV['raketab_files'].split(":") rescue determine_raketab_files
   CRONTAB_EXE       = ENV['crontab_exe'] || "/usr/bin/crontab"
   RAKE_EXE          = ENV['rake_exe'] || (rake = `which rake`.strip and rake.empty?) ? "/usr/bin/rake" : rake
   RAKETAB_RAILS_ENV = ENV['raketab_rails_env'] || RAILS_ENV
@@ -61,4 +61,36 @@ module Craken
     `#{CRONTAB_EXE} #{filename}`
     FileUtils.rm filename
   end
+  
+  def raketab(files=RAKETAB_FILES)    
+    files.map do |file|
+      next unless File.exist?(file)
+      builder = file =~ /.(\w+)$/ ? "build_raketab_from_#{$1}" : "build_raketab"
+      send(builder.to_sym, file)
+    end.join("\n")
+  end
+  
+  private
+    def build_raketab_from_yml(file)
+      yml = YAML::load(ERB.new(File.read(file)).result(binding))
+      yml.map do |name,tab|
+        format = []
+        format << (tab['min'] || tab['minute'] || '*')
+        format << (tab['hour'] || '*')
+        format << (tab['day'] || '*')
+        format << (tab['month'] =~ /\d+/ ? tab['month'] : Date._parse(tab['month'].to_s)[:mon] || '*')
+        format << ((day = tab['weekday'] || tab['wday'] and day =~ /^\d+/ ? day : Date._parse(day.to_s)[:wday]) || '*')
+        format << tab['command']
+        format.join(' ')        
+      end.join("\n")
+    end
+    alias_method :build_raketab_from_yaml, :build_raketab_from_yml
+    
+    def build_raketab(file)
+      ERB.new(File.read(file)).result(binding)
+    end
+
+    def method_missing(method, *args)
+      method.to_s =~ /^build_raketab/ ? build_raketab(*args) : super
+    end
 end
