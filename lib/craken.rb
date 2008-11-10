@@ -78,8 +78,8 @@ module Craken
         format << (tab['min'] || tab['minute'] || '*')
         format << (tab['hour'] || '*')
         format << (tab['day'] || '*')
-        format << (tab['month'] =~ /\d+/ ? tab['month'] : Date._parse(tab['month'].to_s)[:mon] || '*')
-        format << ((day = tab['weekday'] || tab['wday'] and day =~ /^\d+/ ? day : Date._parse(day.to_s)[:wday]) || '*')
+        format << (tab['month'] =~ /^\d+$/ ? tab['month'] : Date._parse(tab['month'].to_s)[:mon] || '*')
+        format << ((day = tab['weekday'] || tab['wday'] and day =~ /^\d+$/ ? day : Date._parse(day.to_s)[:wday]) || '*')
         format << tab['command']
         format.join(' ')        
       end.join("\n")
