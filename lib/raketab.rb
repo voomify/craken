@@ -27,7 +27,8 @@ class Raketab
     hour ||= options[:at].to_i if options[:at] # :at => "5 o'clock" 
 
     # fill missing items
-    month, wday, mday, hour, min = [month, wday, mday, hour, min].map { |t| t || '*' }
+    hour, min         = [hour, min].map { |t| t || '0' }
+    month, wday, mday = [month, wday, mday].map { |t| t || '*' }
     
     # put it together
     @@tabs << "#{min} #{hour} #{mday} #{month} #{wday} #{command}"
