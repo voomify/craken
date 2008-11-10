@@ -1,4 +1,5 @@
 require 'socket'
+load "#{File.dirname(__FILE__)}/raketab.rb"
 
 module Craken
   def self.determine_raketab_files
@@ -71,6 +72,11 @@ module Craken
   end
   
   private
+    def build_raketab_from_rb(file)
+      load file
+      Raketab.tabs
+    end
+  
     def build_raketab_from_yml(file)
       yml = YAML::load(ERB.new(File.read(file)).result(binding))
       yml.map do |name,tab|
