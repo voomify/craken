@@ -1,26 +1,32 @@
+require 'date'
+
 class Raketab  
   def initialize(&block)
     @@tabs = []
     yield self
   end
   
-  def schedule(command, options)    
-    options = options.with_indifferent_access
-    month, wday, mday, hour, min = options[:month] || options[:mon], 
-                                   options[:weekday] || options[:wday], 
-                                   options[:month] || options[:mon],
-                                   options[:hour],
-                                   options[:minute] || options[:min]
+  def schedule(command, options={})
+    month, wday, mday, hour, min = options[:month]   || options[:months]   || options[:mon], 
+                                   options[:weekday] || options[:weekdays] || options[:wday], 
+                                   options[:day]     || options[:days]     || options[:mday],
+                                   options[:hour]    || options[:hours],
+                                   options[:minute]  || options[:minutes]  || options[:min]
 
     [:each, :every, :on, :in, :at, :the].each do |type|
       if options[type]
-         parse = Date._parse(options[type].to_s.singularize)
+         parse = Date._parse(options[type].to_s.gsub(/s$/i, ''))
          month ||= parse[:mon]
          wday  ||= parse[:wday]
          mday  ||= parse[:mday]
          hour  ||= parse[:hour]
          min   ||= parse[:min]      
       end
+    end
+
+    # deal with any arrays and ranges
+    min, hour, mday, wday, month = [min, hour, mday, wday, month].map do |type| 
+     type.respond_to?(:map) ? type.map.join(',') : type    
     end
 
     # special cases with hours
