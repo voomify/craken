@@ -15,12 +15,20 @@ class Raketab
 
     [:each, :every, :on, :in, :at, :the].each do |type|
       if options[type]
-         parse = Date._parse(options[type].to_s.gsub(/s$/i, ''))
-         month ||= parse[:mon]
-         wday  ||= parse[:wday]
-         mday  ||= parse[:mday]
-         hour  ||= parse[:hour]
-         min   ||= parse[:min]      
+        if(options[type] =~ /:/)
+          from = options[type]
+        else
+          from, ignore, exclusive, to = options[type].to_s.match(/(\w+)(\.\.(\.?)(\w+))?/)[1..4].map { |m| m.gsub(/s$/i, '') if m }
+        end
+
+        parse = Date._parse(from)
+        range = to ? Date._parse(to) : {}
+
+        month ||= get_value(parse, range, exclusive == '.', :mon)
+        wday  ||= get_value(parse, range, exclusive == '.', :wday)
+        mday  ||= get_value(parse, range, exclusive == '.', :mday)
+        hour  ||= get_value(parse, range, exclusive == '.', :hour)
+        min   ||= get_value(parse, range, exclusive == '.', :min)
       end
     end
 
@@ -48,4 +56,19 @@ class Raketab
   def tabs
     self.class.tabs
   end
+
+  private
+    def get_value(from, to, exclusive, on)
+      value = (from[on] and to[on]) ? Range.new(from[on], to[on], exclusive) : from[on]
+      if value.is_a?(Range) and value.first > value.last
+        reverse = (value.last+(exclusive ? 0 : 1)..(value.first-1))
+        range = case on
+          when :mon  then 1..12
+          when :wday then 0..6
+          when :mday then 1..31
+        end
+        value = range.map - reverse.map
+      end
+      value
+    end
 end  
