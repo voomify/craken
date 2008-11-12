@@ -3,6 +3,7 @@ RAILS_ENV = "test"
 ENV['app_name'] = "craken_test"
 
 require File.dirname(__FILE__) + "/../lib/craken"
+require 'fileutils'
 
 describe Craken do
 
