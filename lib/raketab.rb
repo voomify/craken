@@ -1,12 +1,34 @@
+require 'enumeration'
 require 'date'
 
 class Raketab  
-  def initialize(&block)
-    @@tabs = []
-    yield self
+  Months   = enum %w[January February March April May June July August September October November December], 1
+  Weekdays = enum %w[Sunday Monday Tuesday Wednesday Thursday Friday Saturday]
+    
+  class << self
+    def methodize_enum(enum)
+      enum.each do |e| 
+        p = Proc.new { e }
+        define_method(e.to_s.downcase,    p) 
+        define_method(e.to_abbr.downcase, p) 
+      end
+    end
+    private :methodize_enum
+
+    def schedule(&block)
+      tab = Raketab.new
+      tab.instance_eval(&block)
+      tab
+    end
   end
+  methodize_enum(Months)
+  methodize_enum(Weekdays)
   
-  def schedule(command, options={})
+  def initialize
+    @tabs = []
+  end
+
+  def run(command, options={})
     month, wday, mday, hour, min = options[:month]   || options[:months]   || options[:mon], 
                                    options[:weekday] || options[:weekdays] || options[:wday], 
                                    options[:day]     || options[:days]     || options[:mday],
@@ -45,23 +67,18 @@ class Raketab
     month, wday, mday = [month, wday, mday].map { |t| t || '*' }
     
     # put it together
-    @@tabs << "#{min} #{hour} #{mday} #{month} #{wday} #{command}"
+    @tabs << "#{min} #{hour} #{mday} #{month} #{wday} #{command}"
   end  
-  alias_method :run, :schedule
 
-  def self.tabs
-    @@tabs.join("\n")
-  end
-  
   def tabs
-    self.class.tabs
+    @tabs.join("\n")
   end
 
   private
     def get_value(from, to, exclusive, on)
       value = (from[on] and to[on]) ? Range.new(from[on], to[on], exclusive) : from[on]
       if value.is_a?(Range) and value.first > value.last
-        reverse = (value.last+(exclusive ? 0 : 1)..(value.first-1))
+        reverse = (value.last.to_i+(exclusive ? 0 : 1)..(value.first.to_i-1))
         range = case on
           when :mon  then 1..12
           when :wday then 0..6
