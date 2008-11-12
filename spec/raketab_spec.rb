@@ -105,17 +105,17 @@ describe Raketab do
   end
 
   it "should set the range of days" do
-    Raketab.schedule { run 'inclusive full', :in => 'Monday..Thursday' }.tabs.should == '0 0 * * 1,2,3,4 inclusive full'
-    Raketab.schedule { run 'exclusive full', :in => 'Monday...Friday' }.tabs.should  == '0 0 * * 1,2,3,4 exclusive full'
-    Raketab.schedule { run 'inclusive abbr', :in => 'Mon..Thur' }.tabs.should        == '0 0 * * 1,2,3,4 inclusive abbr'
-    Raketab.schedule { run 'exclusive abbr', :in => 'Mon...Fri' }.tabs.should        == '0 0 * * 1,2,3,4 exclusive abbr'
+    Raketab.schedule { run 'inclusive full', :on => 'Monday..Thursday' }.tabs.should == '0 0 * * 1,2,3,4 inclusive full'
+    Raketab.schedule { run 'exclusive full', :on => 'Monday...Friday' }.tabs.should  == '0 0 * * 1,2,3,4 exclusive full'
+    Raketab.schedule { run 'inclusive abbr', :on => 'Mon..Thur' }.tabs.should        == '0 0 * * 1,2,3,4 inclusive abbr'
+    Raketab.schedule { run 'exclusive abbr', :on => 'Mon...Fri' }.tabs.should        == '0 0 * * 1,2,3,4 exclusive abbr'
   end
 
   it "should set the range of days across week boundry" do
-    Raketab.schedule { run 'inclusive full', :in => 'Thursday..Monday' }.tabs.should  == '0 0 * * 0,1,4,5,6 inclusive full'
-    Raketab.schedule { run 'exclusive full', :in => 'Thursday...Monday' }.tabs.should == '0 0 * * 0,4,5,6 exclusive full'
-    Raketab.schedule { run 'inclusive abbr', :in => 'Thur..Mon' }.tabs.should         == '0 0 * * 0,1,4,5,6 inclusive abbr'
-    Raketab.schedule { run 'exclusive abbr', :in => 'Thur...Mon' }.tabs.should        == '0 0 * * 0,4,5,6 exclusive abbr'
+    Raketab.schedule { run 'inclusive full', :on => 'Thursday..Monday' }.tabs.should  == '0 0 * * 0,1,4,5,6 inclusive full'
+    Raketab.schedule { run 'exclusive full', :on => 'Thursday...Monday' }.tabs.should == '0 0 * * 0,4,5,6 exclusive full'
+    Raketab.schedule { run 'inclusive abbr', :on => 'Thu..Mon' }.tabs.should         == '0 0 * * 0,1,4,5,6 inclusive abbr'
+    Raketab.schedule { run 'exclusive abbr', :on => 'Thu...Mon' }.tabs.should        == '0 0 * * 0,4,5,6 exclusive abbr'
   end
 
   it "should set the range of months using month name methods" do
@@ -131,8 +131,18 @@ describe Raketab do
     Raketab.schedule { run 'inclusive abbr reverse', :in => nov..jan }.tabs.should             == '0 0 * 1,11,12 * inclusive abbr reverse'
     Raketab.schedule { run 'exclusive abbr reverse', :in => nov...feb }.tabs.should            == '0 0 * 1,11,12 * exclusive abbr reverse'
   end
+  
+  it "should set the range of days using weekday name methods" do
+    Raketab.schedule { run 'inclusive full', :on => monday..thursday }.tabs.should == '0 0 * * 1,2,3,4 inclusive full'
+    Raketab.schedule { run 'exclusive full', :on => monday...friday }.tabs.should  == '0 0 * * 1,2,3,4 exclusive full'
+    Raketab.schedule { run 'inclusive abbr', :on => mon..thu }.tabs.should         == '0 0 * * 1,2,3,4 inclusive abbr'
+    Raketab.schedule { run 'exclusive abbr', :on => mon...fri }.tabs.should        == '0 0 * * 1,2,3,4 exclusive abbr'
+  end
 
-  # run 'test', :on => '1st..3rd'
-  # run 'test', :every => 'September..November'
-  # run 'test', :at => 'Thurs..Fri'  
+  it "should set the range of days across week boundry using weekday name methods" do
+    Raketab.schedule { run 'inclusive full', :on => thursday..monday }.tabs.should  == '0 0 * * 0,1,4,5,6 inclusive full'
+    Raketab.schedule { run 'exclusive full', :on => thursday...monday }.tabs.should == '0 0 * * 0,4,5,6 exclusive full'
+    Raketab.schedule { run 'inclusive abbr', :on => thu..mon }.tabs.should          == '0 0 * * 0,1,4,5,6 inclusive abbr'
+    Raketab.schedule { run 'exclusive abbr', :on => thu...mon }.tabs.should         == '0 0 * * 0,4,5,6 exclusive abbr'
+  end
 end
