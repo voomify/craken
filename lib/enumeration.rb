@@ -13,6 +13,10 @@ class Enumeration
   def succ
     self.class.units[(@unit_id + 1) % self.class.size]
   end
+
+  def between?(a,b)
+    true # always in rings, change for non rings
+  end
   
   def <=>(o)
     @unit_id <=> o.instance_variable_get("@unit_id")
@@ -31,15 +35,16 @@ class Enumeration
   end
   
   def coerce(o)
-    [self.class.for(o), self]
+    puts "coerced #{[self.class.for(o % self.class.size), self].inspect}"
+    [self.class.for(o % self.class.size), self]
   end
 
   def +(o)
-    self.class.for((to_i + o.to_i) % self.class.size)
+    self.class.for(((to_i + o.to_i)) % self.class.size)
   end
 
   def -(o)
-    self.class.for((to_i - o.to_i) % self.class.size)
+    self.class.for(((to_i - o.to_i)) % self.class.size)
   end
 
   def inspect
