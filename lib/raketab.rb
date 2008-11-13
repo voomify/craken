@@ -2,8 +2,8 @@ require 'enumeration'
 require 'date'
 
 class Raketab  
-  Months   = enum %w[January February March April May June July August September October November December], 1
-  Weekdays = enum %w[Sunday Monday Tuesday Wednesday Thursday Friday Saturday]
+  Month   = enum %w[January February March April May June July August September October November December], 1
+  Weekday = enum %w[Sunday Monday Tuesday Wednesday Thursday Friday Saturday]
     
   class << self
     def methodize_enum(enum)
@@ -21,8 +21,8 @@ class Raketab
       tab
     end
   end
-  methodize_enum(Months)
-  methodize_enum(Weekdays)
+  methodize_enum(Month)
+  methodize_enum(Weekday)
   
   def initialize
     @tabs = []
@@ -35,12 +35,21 @@ class Raketab
                                    options[:hour]    || options[:hours],
                                    options[:minute]  || options[:minutes]  || options[:min]
 
+    # make sure we have ints instead of enums, yo
+    month, wday = [[month, Month], [wday, Weekday]].map do |element,type| 
+      if element.kind_of?(Array) # just arrays for now
+       element.each_with_index { |e,i| element[i] = enum_to_i(e,type) } 
+      else
+       enum_to_i(element,type)
+      end
+    end
+
     [:each, :every, :on, :in, :at, :the].each do |type|
       if options[type]
         if(options[type] =~ /:/)
           from = options[type]
         else
-          from, ignore, exclusive, to = options[type].to_s.match(/(\w+)(\.\.(\.?)(\w+))?/)[1..4].map { |m| m.gsub(/s$/i, '') if m }
+          from, ignore, exclusive, to = options[type].to_s.match(/(\w+)(\.\.(\.?)(\w+))?/)[1..4].map { |m| m.gsub(/s$/i, '') if m } 
         end
 
         parse = Date._parse(from)
@@ -60,11 +69,11 @@ class Raketab
     end
 
     # special cases with hours
-    hour ||= options[:at].to_i if options[:at] # :at => "5 o'clock" 
+    hour ||= options[:at].to_i if options[:at] # :at => "5 o'clock" / "5" / 5
 
     # fill missing items
     hour, min         = [hour, min].map { |t| t || '0' }
-    month, wday, mday = [month, wday, mday].map { |t| t || '*' }
+    month, wday, mday = [month, wday, mday].map { |t| t || '*' }    
     
     # put it together
     @tabs << "#{min} #{hour} #{mday} #{month} #{wday} #{command}"
@@ -87,5 +96,9 @@ class Raketab
         value = range.map - reverse.map
       end
       value
+    end
+
+    def enum_to_i(element, type)
+      element.kind_of?(type) ? element.to_i : element
     end
 end  
