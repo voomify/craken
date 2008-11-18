@@ -35,16 +35,15 @@ class Enumeration
   end
   
   def coerce(o)
-    puts "coerced #{[self.class.for(o % self.class.size), self].inspect}"
     [self.class.for(o % self.class.size), self]
   end
 
   def +(o)
-    self.class.for(((to_i + o.to_i)) % self.class.size)
+    self.class.for((to_i + o.to_i) % self.class.size)
   end
 
   def -(o)
-    self.class.for(((to_i - o.to_i)) % self.class.size)
+    self.class.for((to_i - o.to_i) % self.class.size)
   end
 
   def inspect

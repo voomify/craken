@@ -122,16 +122,15 @@ describe Enumeration do
       (Weekday::SUN - 7).should == Weekday::SUN 
     end
 
-    it "should use integer values in arithmatic (+/-) and return another unit with coersion" do
-      # Weekday.each_with_index do |w,i|
-      #   (i + Weekday::MON).should == w
-      # end
-      # Weekday.each_with_index do |w,i|
-      #   (i - Weekday::SAT).should == 
-      # end
-      # ring / identity
-      # (7 + Weekday::MON).should == Weekday::MON
-      # (7 - Weekday::MON).should == Weekday::MON 
+    it "should use integer values in arithmatic (+/-) and return another unit with coersion to weekday on integer" do
+      Weekday.each_with_index do |w,i|
+        (1 + w).should == Weekday.map[(i+1) % Weekday.size]
+      end
+      Weekday.each_with_index do |w,i|
+        (i - w).should == Weekday::SUN
+      end      
+      (0 + Weekday::MON).should == Weekday::MON
+      (2 - Weekday::MON).should == Weekday::MON 
     end
   end
 end
