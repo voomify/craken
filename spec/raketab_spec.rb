@@ -21,7 +21,7 @@ describe Raketab do
     Raketab.schedule { run 'test', :wday => monday }.tabs.should   == "0 0 * * 1 test"
     Raketab.schedule { run 'test', :weekday => mon }.tabs.should   == "0 0 * * 1 test"
   end
-    
+
   it "should set the fields by comma string" do
     Raketab.schedule { run 'test', :minutes => '1,2,3' }.tabs.should  == "1,2,3 0 * * * test"
     Raketab.schedule { run 'test', :hours => '1,2,3' }.tabs.should    == "0 1,2,3 * * * test"
