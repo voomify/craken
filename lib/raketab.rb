@@ -1,4 +1,4 @@
-require 'enumeration'
+require "#{File.dirname(__FILE__)}/enumeration"
 require 'date'
 
 class Raketab  

@@ -1,5 +1,5 @@
 require 'socket'
-load "#{File.dirname(__FILE__)}/raketab.rb"
+require "#{File.dirname(__FILE__)}/raketab"
 
 module Craken
   def self.determine_raketab_files
