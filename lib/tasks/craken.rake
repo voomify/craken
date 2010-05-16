@@ -1,13 +1,13 @@
-require "#{File.dirname(__FILE__)}/../lib/craken"
+require "craken"
 
 namespace :craken do
 
   desc "Install raketab script"
-  task :install do
+  task :install do    
     require 'erb'
     include Craken
-    unless RAKETAB_FILES.empty?
-      files = (plural = RAKETAB_FILES.size > 1) ? RAKETAB_FILES.join(", ") : RAKETAB_FILES.first
+    unless Craken.raketab_files.empty?
+      files = (plural = Craken.raketab_files.size > 1) ? Craken.raketab_files.join(", ") : Craken.raketab_files.first
       puts "craken:install => Using raketab file#{plural ? 's' : ''} #{files}" 
       crontab = append_tasks(load_and_strip, raketab)
       install crontab

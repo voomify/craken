@@ -1,26 +1,51 @@
+require 'rails'
 require 'socket'
 require "#{File.dirname(__FILE__)}/raketab"
 
 module Craken
-  def self.determine_raketab_files
-    if File.directory?("#{DEPLOY_PATH}/config/craken/") # Use hostname specific raketab first.
-      raketabs = Dir["#{DEPLOY_PATH}/config/craken/*raketab*"].partition {|f| f =~ %r[/raketab.*$] }
-      raketabs.last.empty? ? raketabs.first : raketabs.last.grep(/#{HOSTNAME}_raketab/)
+ require 'craken/railtie' if defined?(Rails)
+
+  def determine_raketab_files
+    if File.directory?("#{deploy_path}/config/craken/") # Use hostname specific raketab first.
+      raketabs = Dir["#{deploy_path}/config/craken/*raketab*"].partition {|f| f =~ %r[/raketab.*$] }
+      raketabs.last.empty? ? raketabs.first : raketabs.last.grep(/#{hostname}_raketab/)
     else
-      Dir["#{DEPLOY_PATH}/config/raketab*"]
+      Dir["#{deploy_path}/config/raketab*"]
     end
   end
 
-  HOSTNAME          = Socket.gethostname.split('.').first.downcase.strip
-  DEPLOY_PATH       = ENV['deploy_path'] || RAILS_ROOT
-  RAKETAB_FILES     = ENV['raketab_files'].split(":") rescue determine_raketab_files
-  CRONTAB_EXE       = ENV['crontab_exe'] || "/usr/bin/crontab"
-  RAKE_EXE          = ENV['rake_exe'] || (rake = `which rake`.strip and rake.empty?) ? "/usr/bin/rake" : rake
-  RAKETAB_RAILS_ENV = ENV['raketab_rails_env'] || RAILS_ENV
+  def hostname
+    Socket.gethostname.split('.').first.downcase.strip    
+  end
+ 
+def deploy_path
+    ENV['deploy_path'] || Rails.root.to_s
+end
+
+def raketab_files
+   ENV['raketab_files'].split(":") rescue determine_raketab_files
+end
+
+def crontab_exe
+  ENV['crontab_exe'] || "/usr/bin/crontab"
+end
+
+def rake_exe
+  ENV['rake_exe'] || (rake = `which rake`.strip and rake.empty?) ? "/usr/bin/rake" : rake
+end
+
+def raketab_rails_env
+  ENV['raketab_rails_env'] || RAILS_ENV
+end
+
   # assumes root of app is name of app, also takes into account 
   # capistrano deployments
-  APP_NAME          = ENV['app_name'] || (DEPLOY_PATH =~ /\/([^\/]*)\/releases\/\d*$/ ? $1 : File.basename(DEPLOY_PATH))
 
+def app_name
+  ENV['app_name'] || (deploy_path =~ /\/([^\/]*)\/releases\/\d*$/ ? $1 : File.basename(deploy_path))
+end
+
+ 
   # see here: http://unixhelp.ed.ac.uk/CGI/man-cgi?crontab+5
   SPECIAL_STRINGS   = %w[@reboot @yearly @annually @monthly @weekly @daily @midnight @hourly]
 
@@ -28,10 +53,10 @@ module Craken
   def load_and_strip
     crontab = ''
     old = false
-    `#{CRONTAB_EXE} -l`.each_line do |line|
+    `#{crontab_exe} -l`.each_line do |line|
       line.strip!
-      if old || line == "### #{APP_NAME} raketab"
-        old = line != "### #{APP_NAME} raketab end"
+      if old || line == "### #{app_name} raketab"
+        old = line != "### #{app_name} raketab end"
       else
         crontab << line
         crontab << "\n"
@@ -41,7 +66,7 @@ module Craken
   end
 
   def append_tasks(crontab, raketab)
-    crontab << "### #{APP_NAME} raketab\n"
+    crontab << "### #{app_name} raketab\n"
     raketab.each_line do |line|
       line.strip!
       unless line =~ /^#/ || line.empty? # ignore comments and blank lines
@@ -53,14 +78,14 @@ module Craken
           crontab << sp[0,5].join(' ')
           tasks = sp[5,sp.size]
         end
-        crontab << " cd #{DEPLOY_PATH} && #{RAKE_EXE} --silent RAILS_ENV=#{RAKETAB_RAILS_ENV}"
+        crontab << " cd #{deploy_path} && #{rake_exe} --silent RAILS_ENV=#{raketab_rails_env}"
         tasks.each do |task|
           crontab << " #{task}"
         end
         crontab << "\n"
       end
     end
-    crontab << "### #{APP_NAME} raketab end\n"
+    crontab << "### #{app_name} raketab end\n"
     crontab
   end
 
@@ -68,11 +93,11 @@ module Craken
   def install(crontab)
     filename = ".crontab#{rand(9999)}" 
     File.open(filename, 'w') { |f| f.write crontab }
-    `#{CRONTAB_EXE} #{filename}`
+    `#{crontab_exe} #{filename}`
     FileUtils.rm filename
   end
   
-  def raketab(files=RAKETAB_FILES)    
+  def raketab(files=raketab_files)    
     files.map do |file|
       next unless File.exist?(file)
       builder = file =~ /.(\w+)$/ ? "build_raketab_from_#{$1}" : "build_raketab"
@@ -107,4 +132,5 @@ module Craken
     def method_missing(method, *args)
       method.to_s =~ /^build_raketab/ ? build_raketab(*args) : super
     end
+
 end
