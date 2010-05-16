@@ -105,13 +105,13 @@ EOS
     it "should add a cd command, rake command and environment variables" do
       raketab = "0 1 0 0 0 foo:bar"
       cron = append_tasks(@crontab, raketab)
-      cron.should match(/0 1 0 0 0 cd #{Craken::DEPLOY_PATH} && #{Craken::RAKE_EXE} --silent RAILS_ENV=#{Craken::RAKETAB_RAILS_ENV} foo:bar/)
+      cron.should match(/0 1 0 0 0 cd #{Craken.deploy_path} && #{Craken.rake_exe} --silent RAILS_ENV=#{Craken.raketab_rails_env} foo:bar/)
     end
 
     it "should ignore additional data at the end of the configuration" do
       raketab = "0 1 0 0 0 foo:bar >> /tmp/foobar.log 2>&1"
       cron = append_tasks(@crontab, raketab)
-      cron.should match(/0 1 0 0 0 cd #{Craken::DEPLOY_PATH} && #{Craken::RAKE_EXE} --silent RAILS_ENV=#{Craken::RAKETAB_RAILS_ENV} foo:bar >> \/tmp\/foobar.log 2>&1/)
+      cron.should match(/0 1 0 0 0 cd #{Craken.deploy_path} && #{Craken.rake_exe} --silent RAILS_ENV=#{Craken.raketab_rails_env} foo:bar >> \/tmp\/foobar.log 2>&1/)
     end
   end
 

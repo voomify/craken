@@ -1,4 +1,3 @@
-require 'rails'
 require 'socket'
 require "#{File.dirname(__FILE__)}/raketab"
 
@@ -18,9 +17,13 @@ module Craken
     Socket.gethostname.split('.').first.downcase.strip    
   end
  
-def deploy_path
-    ENV['deploy_path'] || Rails.root.to_s
-end
+  def deploy_path
+    Craken.deploy_path
+  end
+
+ def self.deploy_path
+     ENV['deploy_path'] || (Rails.root.to_s  if defined?(Rails))
+ end
 
 def raketab_files
    ENV['raketab_files'].split(":") rescue determine_raketab_files
@@ -31,11 +34,19 @@ def crontab_exe
 end
 
 def rake_exe
-  ENV['rake_exe'] || (rake = `which rake`.strip and rake.empty?) ? "/usr/bin/rake" : rake
+  Craken.rake_exe
 end
 
+ def self.rake_exe
+   ENV['rake_exe'] || (rake = `which rake`.strip and rake.empty?) ? "/usr/bin/rake" : rake
+ end
+
+ def self.raketab_rails_env
+   ENV['raketab_rails_env'] || RAILS_ENV
+ end
+
 def raketab_rails_env
-  ENV['raketab_rails_env'] || RAILS_ENV
+  Craken.raketab_rails_env
 end
 
   # assumes root of app is name of app, also takes into account 

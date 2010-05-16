@@ -1,3 +1,5 @@
+require 'raketab'
+
 describe Raketab do
   it "should have defaults (0 for hour, minutes and * for days and months)" do
    Raketab.schedule { run 'test' }.tabs.should == '0 0 * * * test'

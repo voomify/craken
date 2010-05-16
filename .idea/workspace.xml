@@ -2,10 +2,11 @@
 <project version="4">
   <component name="ChangeListManager" verified="true">
     <list default="true" readonly="true" id="621b7b6d-5314-4c50-9536-b1dd1487e37c" name="Default" comment="">
-      <change type="MOVED" beforePath="$PROJECT_DIR$/tasks/craken.rake" afterPath="$PROJECT_DIR$/lib/tasks/craken.rake" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Rakefile" afterPath="$PROJECT_DIR$/Rakefile" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/spec/raketab_spec.rb" afterPath="$PROJECT_DIR$/spec/raketab_spec.rb" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pkg/craken-0.0.0.gem" afterPath="$PROJECT_DIR$/pkg/craken-0.0.0.gem" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/spec/craken_spec.rb" afterPath="$PROJECT_DIR$/spec/craken_spec.rb" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/craken.rb" afterPath="$PROJECT_DIR$/lib/craken.rb" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/craken/railtie.rb" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path=".idea/workspace.xml" />
     <ignored path="craken.iws" />
@@ -47,10 +48,19 @@
           </provider>
         </entry>
       </file>
+      <file leaf-file-name="raketab_spec.rb" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/spec/raketab_spec.rb">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="11" column="24" selection-start="511" selection-end="511" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
       <file leaf-file-name="craken.rb" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/lib/craken.rb">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="7" column="6" selection-start="144" selection-end="144" vertical-scroll-proportion="0.18584071">
+            <state line="48" column="26" selection-start="1155" selection-end="1155" vertical-scroll-proportion="0.920354">
               <folding />
             </state>
           </provider>
@@ -74,6 +84,15 @@
           </provider>
         </entry>
       </file>
+      <file leaf-file-name="craken_spec.rb" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/spec/craken_spec.rb">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="107" column="55" selection-start="3104" selection-end="3104" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
     </leaf>
   </component>
   <component name="FindManager">
@@ -86,6 +105,8 @@
       <list>
         <option value="$PROJECT_DIR$/lib/craken/railtie.rb" />
         <option value="$PROJECT_DIR$/lib/tasks/craken.rake" />
+        <option value="$PROJECT_DIR$/spec/raketab_spec.rb" />
+        <option value="$PROJECT_DIR$/spec/craken_spec.rb" />
         <option value="$PROJECT_DIR$/lib/craken.rb" />
       </list>
     </option>
@@ -132,6 +153,20 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="craken" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="craken" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="craken" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="spec" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -271,13 +306,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/lib/raketab.rb">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="12" selection-start="12" selection-end="12" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/lib/tasks/craken.rake">
       <provider selected="true" editor-type-id="text-editor">
         <state line="11" column="98" selection-start="422" selection-end="422" vertical-scroll-proportion="0.0">
@@ -285,9 +313,30 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/lib/raketab.rb">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="0" column="12" selection-start="12" selection-end="12" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/spec/raketab_spec.rb">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="11" column="24" selection-start="511" selection-end="511" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/spec/craken_spec.rb">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="107" column="55" selection-start="3104" selection-end="3104" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/lib/craken.rb">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="7" column="6" selection-start="144" selection-end="144" vertical-scroll-proportion="0.18584071">
+        <state line="48" column="26" selection-start="1155" selection-end="1155" vertical-scroll-proportion="0.920354">
           <folding />
         </state>
       </provider>
