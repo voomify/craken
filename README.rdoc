@@ -14,7 +14,7 @@ To install
 To use craken from capistrano just add the following to your Capfile:
   require 'craken/recipes'
 
-Note: This has not been tested yet.
+Note: Capistrano tasks have not been tested yet.  They are unmodifed from the plugin, should be good to go.
 
 = Craken
 
