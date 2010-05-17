@@ -1,3 +1,16 @@
+= Rails 3 Fork
+
+This works with Rails 3 Beta 3.
+This is a fork of latimes/craken.
+It has been packaged as a Gem using Jeweler.
+
+Requires jeweler to build the gem.
+
+To install
+1) clone this project
+2) run rake gem:install
+3) in your rails 3 Gemfile add> gem 'craken'
+
 = Craken
 
 Craken is a rails plugin for managing and installing rake-centric crontab files 

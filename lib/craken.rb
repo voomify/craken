@@ -94,7 +94,7 @@ end
         tasks.each do |task|
           crontab << " #{task}"
         end
-        crontab << "\n"
+        crontab << "\n"                  ''
       end
     end
     crontab << "### #{app_name} raketab end\n"
