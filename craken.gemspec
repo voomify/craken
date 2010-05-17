@@ -19,11 +19,11 @@ Gem::Specification.new do |s|
     "MIT-LICENSE",
      "README.rdoc",
      "init.rb",
-     "lib/recipes.rb",
+     "lib/craken.rb",
      "lib/craken/railtie.rb",
+     "lib/craken/recipes.rb",
      "lib/enumeration.rb",
      "lib/raketab.rb",
-     "lib/recipes/recipes.rb",
      "lib/tasks/craken.rake"
   ]
   s.homepage = %q{http://www.github.com/latimes/craken}

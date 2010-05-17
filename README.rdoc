@@ -136,6 +136,11 @@ You can also specify the month number or weekday number as you would in a cronta
 
 Here, the command will run every hour from Monday to Friday.  Month and Weekday names are not supported when doing ranges in this fashion.
 
+You can use the special strings using the following format:
+  special_job:
+    special: @daily
+    command: run_me_daily > /tmp/thing_to_do.log 2>&1
+
 === Raketab DSL
 
 The other format is written in pure ruby using the +Raketab+ object.  In your +config/craken/raketab.rb+ file:

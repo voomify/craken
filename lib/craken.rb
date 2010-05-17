@@ -126,13 +126,17 @@ end
       yml = YAML::load(ERB.new(File.read(file)).result(binding))
       yml.map do |name,tab|
         format = []
-        format << (tab['min'] || tab['minute'] || '0')
-        format << (tab['hour'] || '0')
-        format << (tab['day'] || '*')
-        format << (tab['month'] =~ /^\d+$/ ? tab['month'] : Date._parse(tab['month'].to_s)[:mon] || '*')
-        format << ((day = tab['weekday'] || tab['wday'] and day =~ /^\d+$/ ? day : Date._parse(day.to_s)[:wday]) || '*')
-        format << tab['command']
-        format.join(' ')        
+	if tab['special']
+	  format << tab['special']
+	else
+      format << (tab['min'] || tab['minute'] || '0')
+      format << (tab['hour'] || '0')
+      format << (tab['day'] || '*')
+      format << (tab['month'] =~ /^\d+$/ ? tab['month'] : Date._parse(tab['month'].to_s)[:mon] || '*')
+      format << ((day = tab['weekday'] || tab['wday'] and day =~ /^\d+$/ ? day : Date._parse(day.to_s)[:wday]) || '*')
+	end
+      format << tab['command']
+      format.join(' ')
       end.join("\n")
     end
     alias_method :build_raketab_from_yaml, :build_raketab_from_yml
