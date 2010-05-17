@@ -14,7 +14,8 @@ To install
 To use craken from capistrano just add the following to your Capfile:
   require 'craken/recipes'
 
-  Note: This has not been tested yet.
+Note: This has not been tested yet.
+
 = Craken
 
 Craken is a rails plugin for managing and installing rake-centric crontab files 
