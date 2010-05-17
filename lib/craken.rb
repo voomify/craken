@@ -1,8 +1,9 @@
+require 'rails' if defined?(Rails)
 require 'socket'
 require "#{File.dirname(__FILE__)}/raketab"
 
 module Craken
- require 'craken/railtie' if defined?(Rails)
+  require 'craken/railtie' if defined?(Rails)
 
   def determine_raketab_files
     if File.directory?("#{deploy_path}/config/craken/") # Use hostname specific raketab first.
