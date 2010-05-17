@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{craken}
-  s.version = "0.0.0"
+  s.version = "1.0.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Doug McInnes"]
-  s.date = %q{2010-05-16}
+  s.date = %q{2010-05-17}
   s.description = %q{A Rails plugin for managing and installing rake-centric crontab files.}
   s.email = %q{doug@dougmcinnes.com}
   s.extra_rdoc_files = [
@@ -19,12 +19,12 @@ Gem::Specification.new do |s|
     "MIT-LICENSE",
      "README.rdoc",
      "init.rb",
-     "lib/craken.rb",
+     "lib/recipes.rb",
      "lib/craken/railtie.rb",
      "lib/enumeration.rb",
      "lib/raketab.rb",
-     "lib/tasks/craken.rake",
-     "recipes/craken.rb"
+     "lib/recipes/recipes.rb",
+     "lib/tasks/craken.rake"
   ]
   s.homepage = %q{http://www.github.com/latimes/craken}
   s.rdoc_options = ["--charset=UTF-8"]
