@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>append_tasks (Craken)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File lib/craken.rb, line 80</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">append_tasks</span>(<span class="ruby-identifier">crontab</span>, <span class="ruby-identifier">raketab</span>)
+    <span class="ruby-identifier">crontab</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-node">&quot;### #{app_name} raketab\n&quot;</span>
+    <span class="ruby-identifier">raketab</span>.<span class="ruby-identifier">each_line</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">line</span><span class="ruby-operator">|</span>
+      <span class="ruby-identifier">line</span>.<span class="ruby-identifier">strip!</span>
+      <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">line</span> <span class="ruby-operator">=~</span> <span class="ruby-regexp re">/^#/</span> <span class="ruby-operator">||</span> <span class="ruby-identifier">line</span>.<span class="ruby-identifier">empty?</span> <span class="ruby-comment cmt"># ignore comments and blank lines</span>
+        <span class="ruby-identifier">sp</span> = <span class="ruby-identifier">line</span>.<span class="ruby-identifier">split</span>
+        <span class="ruby-keyword kw">if</span> <span class="ruby-constant">SPECIAL_STRINGS</span>.<span class="ruby-identifier">include?</span>(<span class="ruby-identifier">sp</span>.<span class="ruby-identifier">first</span>)
+          <span class="ruby-identifier">crontab</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-identifier">sp</span>.<span class="ruby-identifier">shift</span>
+          <span class="ruby-identifier">tasks</span> = <span class="ruby-identifier">sp</span>
+        <span class="ruby-keyword kw">else</span>
+          <span class="ruby-identifier">crontab</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-identifier">sp</span>[<span class="ruby-value">0</span>,<span class="ruby-value">5</span>].<span class="ruby-identifier">join</span>(<span class="ruby-value str">' '</span>)
+          <span class="ruby-identifier">tasks</span> = <span class="ruby-identifier">sp</span>[<span class="ruby-value">5</span>,<span class="ruby-identifier">sp</span>.<span class="ruby-identifier">size</span>]
+        <span class="ruby-keyword kw">end</span>
+        <span class="ruby-identifier">crontab</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-node">&quot; cd #{deploy_path} &amp;&amp; #{rake_exe} --silent RAILS_ENV=#{raketab_rails_env}&quot;</span>
+        <span class="ruby-identifier">tasks</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">task</span><span class="ruby-operator">|</span>
+          <span class="ruby-identifier">crontab</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-node">&quot; #{task}&quot;</span>
+        <span class="ruby-keyword kw">end</span>
+        <span class="ruby-identifier">crontab</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-value str">&quot;\n&quot;</span>                  <span class="ruby-value str">''</span>
+      <span class="ruby-keyword kw">end</span>
+    <span class="ruby-keyword kw">end</span>
+    <span class="ruby-identifier">crontab</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-node">&quot;### #{app_name} raketab end\n&quot;</span>
+    <span class="ruby-identifier">crontab</span>
+  <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

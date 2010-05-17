@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>run (Raketab)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File lib/raketab.rb, line 31</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">run</span>(<span class="ruby-identifier">command</span>, <span class="ruby-identifier">options</span>={})
+    <span class="ruby-identifier">month</span>, <span class="ruby-identifier">wday</span>, <span class="ruby-identifier">mday</span>, <span class="ruby-identifier">hour</span>, <span class="ruby-identifier">min</span> = <span class="ruby-identifier">options</span>[<span class="ruby-identifier">:month</span>]   <span class="ruby-operator">||</span> <span class="ruby-identifier">options</span>[<span class="ruby-identifier">:months</span>]   <span class="ruby-operator">||</span> <span class="ruby-identifier">options</span>[<span class="ruby-identifier">:mon</span>], 
+                                   <span class="ruby-identifier">options</span>[<span class="ruby-identifier">:weekday</span>] <span class="ruby-operator">||</span> <span class="ruby-identifier">options</span>[<span class="ruby-identifier">:weekdays</span>] <span class="ruby-operator">||</span> <span class="ruby-identifier">options</span>[<span class="ruby-identifier">:wday</span>], 
+                                   <span class="ruby-identifier">options</span>[<span class="ruby-identifier">:day</span>]     <span class="ruby-operator">||</span> <span class="ruby-identifier">options</span>[<span class="ruby-identifier">:days</span>]     <span class="ruby-operator">||</span> <span class="ruby-identifier">options</span>[<span class="ruby-identifier">:mday</span>],
+                                   <span class="ruby-identifier">options</span>[<span class="ruby-identifier">:hour</span>]    <span class="ruby-operator">||</span> <span class="ruby-identifier">options</span>[<span class="ruby-identifier">:hours</span>],
+                                   <span class="ruby-identifier">options</span>[<span class="ruby-identifier">:minute</span>]  <span class="ruby-operator">||</span> <span class="ruby-identifier">options</span>[<span class="ruby-identifier">:minutes</span>]  <span class="ruby-operator">||</span> <span class="ruby-identifier">options</span>[<span class="ruby-identifier">:min</span>]
+
+    <span class="ruby-comment cmt"># make sure we have ints instead of enums, yo</span>
+    <span class="ruby-identifier">month</span>, <span class="ruby-identifier">wday</span> = [[<span class="ruby-identifier">month</span>, <span class="ruby-constant">Month</span>], [<span class="ruby-identifier">wday</span>, <span class="ruby-constant">Weekday</span>]].<span class="ruby-identifier">map</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">element</span>,<span class="ruby-identifier">type</span><span class="ruby-operator">|</span> 
+      <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">element</span>.<span class="ruby-identifier">kind_of?</span>(<span class="ruby-constant">Array</span>) <span class="ruby-comment cmt"># just arrays for now</span>
+       <span class="ruby-identifier">element</span>.<span class="ruby-identifier">each_with_index</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">e</span>,<span class="ruby-identifier">i</span><span class="ruby-operator">|</span> <span class="ruby-identifier">element</span>[<span class="ruby-identifier">i</span>] = <span class="ruby-identifier">enum_to_i</span>(<span class="ruby-identifier">e</span>,<span class="ruby-identifier">type</span>) } 
+      <span class="ruby-keyword kw">else</span>
+       <span class="ruby-identifier">enum_to_i</span>(<span class="ruby-identifier">element</span>,<span class="ruby-identifier">type</span>)
+      <span class="ruby-keyword kw">end</span>
+    <span class="ruby-keyword kw">end</span>
+
+    [<span class="ruby-identifier">:each</span>, <span class="ruby-identifier">:every</span>, <span class="ruby-identifier">:on</span>, <span class="ruby-identifier">:in</span>, <span class="ruby-identifier">:at</span>, <span class="ruby-identifier">:the</span>].<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">type</span><span class="ruby-operator">|</span>
+      <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">options</span>[<span class="ruby-identifier">type</span>]
+        <span class="ruby-keyword kw">if</span>(<span class="ruby-identifier">options</span>[<span class="ruby-identifier">type</span>] <span class="ruby-operator">=~</span> <span class="ruby-regexp re">/:/</span>)
+          <span class="ruby-identifier">from</span> = <span class="ruby-identifier">options</span>[<span class="ruby-identifier">type</span>]
+        <span class="ruby-keyword kw">else</span>
+          <span class="ruby-identifier">from</span>, <span class="ruby-identifier">ignore</span>, <span class="ruby-identifier">exclusive</span>, <span class="ruby-identifier">to</span> = <span class="ruby-identifier">options</span>[<span class="ruby-identifier">type</span>].<span class="ruby-identifier">to_s</span>.<span class="ruby-identifier">match</span>(<span class="ruby-regexp re">/(\w+)(\.\.(\.?)(\w+))?/</span>)[<span class="ruby-value">1</span><span class="ruby-operator">..</span><span class="ruby-value">4</span>].<span class="ruby-identifier">map</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">m</span><span class="ruby-operator">|</span> <span class="ruby-identifier">m</span>.<span class="ruby-identifier">gsub</span>(<span class="ruby-regexp re">/s$/i</span>, <span class="ruby-value str">''</span>) <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">m</span> } 
+        <span class="ruby-keyword kw">end</span>
+
+        <span class="ruby-identifier">parse</span> = <span class="ruby-constant">Date</span>.<span class="ruby-identifier">_parse</span>(<span class="ruby-identifier">from</span>)
+        <span class="ruby-identifier">range</span> = <span class="ruby-identifier">to</span> <span class="ruby-value">? </span><span class="ruby-constant">Date</span>.<span class="ruby-identifier">_parse</span>(<span class="ruby-identifier">to</span>) <span class="ruby-operator">:</span> {}
+
+        <span class="ruby-identifier">month</span> <span class="ruby-operator">||=</span> <span class="ruby-identifier">get_value</span>(<span class="ruby-identifier">parse</span>, <span class="ruby-identifier">range</span>, <span class="ruby-identifier">exclusive</span> <span class="ruby-operator">==</span> <span class="ruby-value str">'.'</span>, <span class="ruby-identifier">:mon</span>)
+        <span class="ruby-identifier">wday</span>  <span class="ruby-operator">||=</span> <span class="ruby-identifier">get_value</span>(<span class="ruby-identifier">parse</span>, <span class="ruby-identifier">range</span>, <span class="ruby-identifier">exclusive</span> <span class="ruby-operator">==</span> <span class="ruby-value str">'.'</span>, <span class="ruby-identifier">:wday</span>)
+        <span class="ruby-identifier">mday</span>  <span class="ruby-operator">||=</span> <span class="ruby-identifier">get_value</span>(<span class="ruby-identifier">parse</span>, <span class="ruby-identifier">range</span>, <span class="ruby-identifier">exclusive</span> <span class="ruby-operator">==</span> <span class="ruby-value str">'.'</span>, <span class="ruby-identifier">:mday</span>)
+        <span class="ruby-identifier">hour</span>  <span class="ruby-operator">||=</span> <span class="ruby-identifier">get_value</span>(<span class="ruby-identifier">parse</span>, <span class="ruby-identifier">range</span>, <span class="ruby-identifier">exclusive</span> <span class="ruby-operator">==</span> <span class="ruby-value str">'.'</span>, <span class="ruby-identifier">:hour</span>)
+        <span class="ruby-identifier">min</span>   <span class="ruby-operator">||=</span> <span class="ruby-identifier">get_value</span>(<span class="ruby-identifier">parse</span>, <span class="ruby-identifier">range</span>, <span class="ruby-identifier">exclusive</span> <span class="ruby-operator">==</span> <span class="ruby-value str">'.'</span>, <span class="ruby-identifier">:min</span>)
+      <span class="ruby-keyword kw">end</span>
+    <span class="ruby-keyword kw">end</span>
+
+    <span class="ruby-comment cmt"># deal with any arrays and ranges</span>
+    <span class="ruby-identifier">min</span>, <span class="ruby-identifier">hour</span>, <span class="ruby-identifier">mday</span>, <span class="ruby-identifier">wday</span>, <span class="ruby-identifier">month</span> = [<span class="ruby-identifier">min</span>, <span class="ruby-identifier">hour</span>, <span class="ruby-identifier">mday</span>, <span class="ruby-identifier">wday</span>, <span class="ruby-identifier">month</span>].<span class="ruby-identifier">map</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">type</span><span class="ruby-operator">|</span> 
+     <span class="ruby-identifier">type</span>.<span class="ruby-identifier">respond_to?</span>(<span class="ruby-identifier">:map</span>) <span class="ruby-operator">?</span> <span class="ruby-identifier">type</span>.<span class="ruby-identifier">map</span>.<span class="ruby-identifier">join</span>(<span class="ruby-value str">','</span>) <span class="ruby-operator">:</span> <span class="ruby-identifier">type</span>    
+    <span class="ruby-keyword kw">end</span>
+
+    <span class="ruby-comment cmt"># special cases with hours</span>
+    <span class="ruby-identifier">hour</span> <span class="ruby-operator">||=</span> <span class="ruby-identifier">options</span>[<span class="ruby-identifier">:at</span>].<span class="ruby-identifier">to_i</span> <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">options</span>[<span class="ruby-identifier">:at</span>] <span class="ruby-comment cmt"># :at =&gt; &quot;5 o'clock&quot; / &quot;5&quot; / 5</span>
+
+    <span class="ruby-comment cmt"># fill missing items</span>
+    <span class="ruby-identifier">hour</span>, <span class="ruby-identifier">min</span>         = [<span class="ruby-identifier">hour</span>, <span class="ruby-identifier">min</span>].<span class="ruby-identifier">map</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">t</span><span class="ruby-operator">|</span> <span class="ruby-identifier">t</span> <span class="ruby-operator">||</span> <span class="ruby-value str">'0'</span> }
+    <span class="ruby-identifier">month</span>, <span class="ruby-identifier">wday</span>, <span class="ruby-identifier">mday</span> = [<span class="ruby-identifier">month</span>, <span class="ruby-identifier">wday</span>, <span class="ruby-identifier">mday</span>].<span class="ruby-identifier">map</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">t</span><span class="ruby-operator">|</span> <span class="ruby-identifier">t</span> <span class="ruby-operator">||</span> <span class="ruby-value str">'*'</span> }    
+    
+    <span class="ruby-comment cmt"># put it together</span>
+    <span class="ruby-ivar">@tabs</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-node">&quot;#{min} #{hour} #{mday} #{month} #{wday} #{command}&quot;</span>
+  <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>
