@@ -2,9 +2,9 @@ require "#{File.dirname(__FILE__)}/enumeration"
 require 'date'
 
 class Raketab  
-  Month   = enum %w[January February March April May June July August September October November December], 1
-  Weekday = enum %w[Sunday Monday Tuesday Wednesday Thursday Friday Saturday]
-    
+  @@month   = enum %w[January February March April May June July August September October November December], 1
+  @@weekday = enum %w[Sunday Monday Tuesday Wednesday Thursday Friday Saturday]
+
   class << self
     def methodize_enum(enum)
       enum.each do |e| 
@@ -21,22 +21,22 @@ class Raketab
       tab
     end
   end
-  methodize_enum(Month)
-  methodize_enum(Weekday)
+  methodize_enum(@@month)
+  methodize_enum(@@weekday)
   
   def initialize
     @tabs = []
   end
 
   def run(command, options={})
-    month, wday, mday, hour, min = options[:month]   || options[:months]   || options[:mon], 
+    month, wday, mday, hour, min = options[:month]   || options[:months]   || options[:mon],
                                    options[:weekday] || options[:weekdays] || options[:wday], 
                                    options[:day]     || options[:days]     || options[:mday],
                                    options[:hour]    || options[:hours],
                                    options[:minute]  || options[:minutes]  || options[:min]
 
     # make sure we have ints instead of enums, yo
-    month, wday = [[month, Month], [wday, Weekday]].map do |element,type| 
+    month, wday = [[month, @@month], [wday, @@weekday]].map do |element,type|
       if element.kind_of?(Array) # just arrays for now
        element.each_with_index { |e,i| element[i] = enum_to_i(e,type) } 
       else
